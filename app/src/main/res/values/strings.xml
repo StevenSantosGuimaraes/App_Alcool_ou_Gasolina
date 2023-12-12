@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Alcool ou Gasolina</string>
+    <string name="qual_a_melhor_opcao_de_abastecimento">Qual a melhor opção de abastecimento?</string>
+    <string name="calcular">Calcular</string>
+    <string name="valor_litro_da_gasolina">Valor litro da Gasolina</string>
+    <string name="valor_litro_do_alcool">Valor litro do Álcool</string>
+    <string name="icon_logo">Icon logo</string>
+</resources>
