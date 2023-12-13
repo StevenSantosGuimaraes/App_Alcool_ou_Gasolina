@@ -7,6 +7,7 @@ import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -16,9 +17,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import br.com.steven.alcoolougasolina.R;
+import br.com.steven.alcoolougasolina.controller.CombustivelController;
+import br.com.steven.alcoolougasolina.model.Combustivel;
 import br.com.steven.alcoolougasolina.util.UtilAlcoolGasolina;
 
 public class MainActivity extends AppCompatActivity {
+
+    Combustivel combustivelAlcool;
+    Combustivel combustivelGasolina;
+
+    CombustivelController combustivelController;
 
     private EditText editAlcool;
     private EditText editGasolina;
@@ -30,9 +38,11 @@ public class MainActivity extends AppCompatActivity {
     private Double precoAlcool;
     private Double precoGasolina;
     private Double fatorCombustivel;
+    private String analise;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mapearComponentes();
@@ -41,21 +51,46 @@ public class MainActivity extends AppCompatActivity {
         Drawable drawable = icone.getDrawable();
         drawable.setColorFilter(ContextCompat.getColor(this, R.color.red), PorterDuff.Mode.SRC_IN);
 
+        btnSalvar.setEnabled(false);
+
+        combustivelController = new CombustivelController(MainActivity.this);
+
         btnSalvar.setOnClickListener(view -> {
+
+            combustivelAlcool =  new Combustivel();
+            combustivelAlcool.setNomeCombustivel("Alcool");
+            combustivelAlcool.setPrecoCombustivel(precoAlcool);
+            combustivelAlcool.setRecomendacao(analise);
+
+            combustivelGasolina =  new Combustivel();
+            combustivelGasolina.setNomeCombustivel("Gasolina");
+            combustivelGasolina.setPrecoCombustivel(precoGasolina);
+            combustivelGasolina.setRecomendacao(analise);
+
+            combustivelController.salvar(combustivelAlcool);
+            combustivelController.salvar(combustivelGasolina);
+
             Toast.makeText(MainActivity.this, "Salvando conteudo (Implementando).", Toast.LENGTH_SHORT).show();
             limparCampos();
+
         });
 
-        btnLimpar.setOnClickListener(view -> limparCampos());
+        btnLimpar.setOnClickListener(view -> {
+            limparCampos();
+            combustivelController.apagarSharedPreferences();
+        });
 
         btnCalcular.setOnClickListener(view -> {
             carregarDados();
             esconderTeclado();
             if (validarCompos()) {
                 fatorCombustivel = UtilAlcoolGasolina.calcularFatorLitro(precoAlcool, precoGasolina);
-                txtResposta.setText(UtilAlcoolGasolina.analisarPrecoPorLitro(fatorCombustivel, this));
+                analise = UtilAlcoolGasolina.analisarPrecoPorLitro(fatorCombustivel, this);
+                txtResposta.setText(analise);
+                btnSalvar.setEnabled(true);
             } else {
-                Toast.makeText(this, "Informe o preço do álcool e da gasolina para efetuar o cálculo.", Toast.LENGTH_SHORT).show();
+                limparCampos();
+                Toast.makeText(this, "O preço do álcool e da gasolina são obrigatórios para efetuar o cálculo.", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -95,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
         editAlcool.setText("");
         editGasolina.setText("");
         txtResposta.setText("");
+        btnSalvar.setEnabled(false);
         Toast.makeText(this, "Formulário reiniciado.", Toast.LENGTH_LONG).show();
     }
 
