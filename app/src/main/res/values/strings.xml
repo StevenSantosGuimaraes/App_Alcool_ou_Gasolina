@@ -5,4 +5,8 @@
     <string name="valor_litro_da_gasolina">Valor litro da Gasolina</string>
     <string name="valor_litro_do_alcool">Valor litro do Álcool</string>
     <string name="icon_logo">Icon logo</string>
+    <string name="limpar">Limpar</string>
+    <string name="salvar">Salvar</string>
+    <string name="melhor_utilizar_gasolina">Melhor utilizar gasolina.</string>
+    <string name="melhor_utilizar_alcool">Melhor utilizar álcool.</string>
 </resources>

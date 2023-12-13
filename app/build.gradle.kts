@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace = "br.com.steven.appalcoolougasolina"
+    namespace = "br.com.steven.alcoolougasolina"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "br.com.steven.appalcoolougasolina"
+        applicationId = "br.com.steven.alcoolougasolina"
         minSdk = 24
         targetSdk = 33
         versionCode = 1
