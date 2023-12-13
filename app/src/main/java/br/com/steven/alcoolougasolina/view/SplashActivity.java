@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import br.com.steven.alcoolougasolina.R;
+import br.com.steven.alcoolougasolina.database.AlcoolGasolinaDB;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -16,7 +17,12 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        iniciarDB();
         trocarTelaSplash();
+    }
+
+    private void iniciarDB() {
+        new AlcoolGasolinaDB(this);
     }
 
     private void trocarTelaSplash() {
@@ -26,6 +32,5 @@ public class SplashActivity extends AppCompatActivity {
             finish();
         }, TIME_OUT_SPLASH);
     }
-
 
 }

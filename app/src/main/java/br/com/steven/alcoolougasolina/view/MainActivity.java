@@ -16,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.List;
+
 import br.com.steven.alcoolougasolina.R;
 import br.com.steven.alcoolougasolina.controller.CombustivelController;
 import br.com.steven.alcoolougasolina.model.Combustivel;
@@ -40,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
     private Double fatorCombustivel;
     private String analise;
 
+    private List<Combustivel> dados;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -53,7 +57,18 @@ public class MainActivity extends AppCompatActivity {
 
         btnSalvar.setEnabled(false);
 
-        combustivelController = new CombustivelController(MainActivity.this);
+        combustivelController = new CombustivelController(this);
+        dados = combustivelController.getListaDeDados();
+
+        /*
+        Combustivel objetoAlteracao = dados.get(1);
+        objetoAlteracao.setNomeCombustivel("VENTO");
+        objetoAlteracao.setPrecoCombustivel(5.69);
+        objetoAlteracao.setRecomendacao("ABASTECER COM VENTO");
+        combustivelController.alterar(objetoAlteracao);
+        */
+
+        //combustivelController.apagar(5);
 
         btnSalvar.setOnClickListener(view -> {
 
