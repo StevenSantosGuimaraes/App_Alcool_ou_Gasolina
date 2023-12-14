@@ -1,29 +1,28 @@
 package br.com.steven.alcoolougasolina.view;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-
 import android.content.Context;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
 import br.com.steven.alcoolougasolina.R;
+import br.com.steven.alcoolougasolina.adapter.CombustivelAdapter;
 import br.com.steven.alcoolougasolina.controller.CombustivelController;
 import br.com.steven.alcoolougasolina.model.Combustivel;
 import br.com.steven.alcoolougasolina.util.UtilAlcoolGasolina;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements CombustivelAdapter.OnItemLongClickListener{
 
     Combustivel combustivelAlcool;
     Combustivel combustivelGasolina;
@@ -43,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
     private String analise;
 
     private List<Combustivel> dados;
+    private RecyclerView recyclerView;
+    private CombustivelAdapter combustivelAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,24 +52,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mapearComponentes();
 
-        ImageView icone = findViewById(R.id.iconeTelaInicial);
-        Drawable drawable = icone.getDrawable();
-        drawable.setColorFilter(ContextCompat.getColor(this, R.color.red), PorterDuff.Mode.SRC_IN);
-
         btnSalvar.setEnabled(false);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
         combustivelController = new CombustivelController(this);
         dados = combustivelController.getListaDeDados();
 
-        /*
-        Combustivel objetoAlteracao = dados.get(1);
-        objetoAlteracao.setNomeCombustivel("VENTO");
-        objetoAlteracao.setPrecoCombustivel(5.69);
-        objetoAlteracao.setRecomendacao("ABASTECER COM VENTO");
-        combustivelController.alterar(objetoAlteracao);
-        */
-
-        //combustivelController.apagar(5);
+        combustivelAdapter = new CombustivelAdapter(dados, (CombustivelAdapter.OnItemLongClickListener) this);
+        recyclerView.setAdapter(combustivelAdapter);
 
         btnSalvar.setOnClickListener(view -> {
 
@@ -85,14 +76,12 @@ public class MainActivity extends AppCompatActivity {
             combustivelController.salvar(combustivelAlcool);
             combustivelController.salvar(combustivelGasolina);
 
-            Toast.makeText(MainActivity.this, "Salvando conteudo (Implementando).", Toast.LENGTH_SHORT).show();
-            limparCampos();
-
+            atualizarListaTela();
+            limparCamposFormulario();
         });
 
         btnLimpar.setOnClickListener(view -> {
-            limparCampos();
-            combustivelController.apagarSharedPreferences();
+            limparCamposFormulario();
         });
 
         btnCalcular.setOnClickListener(view -> {
@@ -104,11 +93,17 @@ public class MainActivity extends AppCompatActivity {
                 txtResposta.setText(analise);
                 btnSalvar.setEnabled(true);
             } else {
-                limparCampos();
+                limparCamposFormulario();
                 Toast.makeText(this, "O preço do álcool e da gasolina são obrigatórios para efetuar o cálculo.", Toast.LENGTH_SHORT).show();
             }
         });
 
+    }
+
+    private void atualizarListaTela() {
+        dados.clear();
+        dados.addAll(combustivelController.getListaDeDados());
+        combustivelAdapter.notifyDataSetChanged();
     }
 
     private boolean validarCompos() {
@@ -122,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
         btnLimpar = findViewById(R.id.btnLimpar);
         btnCalcular = findViewById(R.id.btnCalcular);
         txtResposta = findViewById(R.id.textViewResposta);
+        recyclerView = findViewById(R.id.recyclerViewMinhaLista);
     }
 
     public void carregarDados() {
@@ -141,12 +137,39 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void limparCampos() {
+    public void limparCamposFormulario() {
         editAlcool.setText("");
         editGasolina.setText("");
         txtResposta.setText("");
         btnSalvar.setEnabled(false);
         Toast.makeText(this, "Formulário reiniciado.", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onItemLongClick(int position) {
+        showConfirmationDialog(position);
+    }
+
+    private void showConfirmationDialog(int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Confirmação");
+        builder.setMessage("Deseja remover este item?");
+
+        builder.setPositiveButton("Sim", (dialog, which) -> {
+            removerItemBancoDados(position);
+        });
+
+        builder.setNegativeButton("Não", (dialog, which) -> {
+            // Fechar o diálogo
+        });
+
+        builder.create().show();
+    }
+
+    private void removerItemBancoDados(int position) {
+        Combustivel combustivel = dados.get(position);
+        combustivelController.apagar(combustivel.getId());
+        atualizarListaTela();
     }
 
 }

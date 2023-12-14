@@ -1,9 +1,11 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.AppAlcoolOuGasolina" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+
+    <style name="Base.Theme.AppAlcoolOuGasolina" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <item name="android:statusBarColor">@color/blueB</item>
     </style>
 
-    <style name="Theme.AppAlcoolOuGasolina" parent="Base.Theme.AppAlcoolOuGasolina" />
+    <style name="Theme.AppAlcoolOuGasolina" parent="Base.Theme.AppAlcoolOuGasolina">
+
+    </style>
+
 </resources>

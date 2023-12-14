@@ -12,6 +12,7 @@ import br.com.steven.alcoolougasolina.database.AlcoolGasolinaDB;
 public class SplashActivity extends AppCompatActivity {
 
     public static final int TIME_OUT_SPLASH = 2500;
+    private AlcoolGasolinaDB alcoolGasolinaDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,7 +23,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void iniciarDB() {
-        new AlcoolGasolinaDB(this);
+        alcoolGasolinaDB = new AlcoolGasolinaDB(this);
     }
 
     private void trocarTelaSplash() {
